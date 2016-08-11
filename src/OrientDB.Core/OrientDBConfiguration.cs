@@ -13,6 +13,7 @@ namespace OrientDB.Core
 
         private IOrientDBRecordSerializer _serializer;
         private OrientConnectionOptions _connectionOptions;
+        private IOrientDBLogger _logger;
 
         private OrientConnection _orientConnection;
 
@@ -30,12 +31,17 @@ namespace OrientDB.Core
                     throw new ArgumentNullException($"{nameof(o)} cannot be null.");
                 _connectionOptions = o;
             });
-            LogWith = new OrientDBLoggingConfiguration(this);
+            LogWith = new OrientDBLoggingConfiguration(this, (l) =>
+            {
+                if (l == null)
+                    throw new ArgumentNullException($"{nameof(l)} cannot be null.");
+                _logger = l;
+            });
         }
 
         public OrientConnection CreateConnection()
         {
-            OrientConnection connection = new OrientConnection(_serializer, _connectionOptions);
+            OrientConnection connection = new OrientConnection(_serializer, _connectionOptions, _logger);
 
             return connection;
         }

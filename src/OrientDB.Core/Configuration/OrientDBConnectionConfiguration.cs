@@ -25,5 +25,11 @@ namespace OrientDB.Core.Configuration
             });
             return _configuration;
         }
+
+        public OrientDBConfiguration Connect(OrientConnectionOptions options)
+        {
+            _configAction(options);
+            return _configuration;
+        }
     }
 }
