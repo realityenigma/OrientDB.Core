@@ -1,7 +1,7 @@
-﻿{
+{
   "title": "OrientDB.Core",
   "description": "OrientDB .NET Driver",
-  "version": "0.0.1-*",
+  "version": "0.0.1-prerelease",
   "authors": [ "Michael Davidson" ],
   "packOptions": {
     "tags": [ "orientdb", "database", "orient", ".net", "c#", "document", "graph" ]

@@ -1,34 +1,22 @@
-﻿using System;
+﻿using OrientDB.Core.Abstractions;
+using System;
 
 namespace OrientDB.Core.Configuration
 {
     public class OrientDBConnectionConfiguration
     {
         private readonly OrientDBConfiguration _configuration;
-        private readonly Action<OrientConnectionOptions> _configAction;
+        private readonly Action<IOrientDBConnectionProtocol> _configAction;
 
-        internal OrientDBConnectionConfiguration(OrientDBConfiguration configuration, Action<OrientConnectionOptions> configAction)
+        internal OrientDBConnectionConfiguration(OrientDBConfiguration configuration, Action<IOrientDBConnectionProtocol> configAction)
         {
             _configuration = configuration;
             _configAction = configAction;
         }
 
-        public OrientDBConfiguration Connect(string hostName, string userName, string password, string database, int port = 2424)
+        public OrientDBConfiguration Connect(IOrientDBConnectionProtocol protocol)
         {
-            _configAction(new OrientConnectionOptions
-            {
-                Database = database,
-                HostName = hostName,
-                Password = password,
-                Port = port,
-                UserName = userName
-            });
-            return _configuration;
-        }
-
-        public OrientDBConfiguration Connect(OrientConnectionOptions options)
-        {
-            _configAction(options);
+            _configAction(protocol);
             return _configuration;
         }
     }

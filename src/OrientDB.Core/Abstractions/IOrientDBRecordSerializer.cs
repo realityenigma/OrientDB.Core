@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace OrientDB.Core.Abstractions
 {
     public interface IOrientDBRecordSerializer
     {
+        IEnumerable<T> Deserialize<T>(byte[] data);
+
+        void Serialize(byte[] data);
     }
 }
