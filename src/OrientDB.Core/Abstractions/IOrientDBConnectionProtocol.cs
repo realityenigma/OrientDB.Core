@@ -2,8 +2,8 @@
 {
     public interface IOrientDBConnectionProtocol
     {
-        byte[] ExecuteQuery(string sql);
-        byte[] ExecuteCommand(string sql);
+        TResult ExecuteQuery<TResult>(string sql);
+        TResult ExecuteCommand<TResult>(string sql);
         IOrientDBTransaction NewTransaction();
     }
 }

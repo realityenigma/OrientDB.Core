@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OrientDB.Core.Data
 {
-    public class OrientConnection
+    public class OrientConnection<TResultType> : IOrientConnection
     {
         private readonly IOrientDBRecordSerializer _serializer;
         private readonly IOrientDBConnectionProtocol _connectionProtocol;
@@ -19,7 +19,7 @@ namespace OrientDB.Core.Data
             if (connectionProtocol == null)
                 throw new ArgumentNullException($"{nameof(connectionProtocol)} cannot be null.");
             if (logger == null)
-                throw new ArgumentNullException($"{nameof(logger)} cannot be null");
+                throw new ArgumentNullException($"{nameof(logger)} cannot be null.");
             _serializer = serializer;
             _connectionProtocol = connectionProtocol;
             _logger = logger;
@@ -28,15 +28,15 @@ namespace OrientDB.Core.Data
         public async Task<IEnumerable<T>> ExecuteQueryAsync<T>(string sql)
         {
             _logger.Debug($"Executing SQL Query: {sql}");
-            var data = await Task.FromResult(_connectionProtocol.ExecuteQuery(sql));
-            return await Task.FromResult(_serializer.Deserialize<T>(data));
+            var data = await Task.FromResult(_connectionProtocol.ExecuteQuery<TResultType>(sql));
+            return await Task.FromResult(_serializer.Deserialize<T, TResultType>(data));
         }
 
         public async Task<OrientDBExecutionResult> ExecuteCommandAsync(string sql)
         {
             _logger.Debug($"Executing SQL Command: {sql}");
-            var data = await Task.FromResult(_connectionProtocol.ExecuteCommand(sql));
-            return await Task.FromResult(_serializer.Deserialize<OrientDBExecutionResult>(data).First());
+            var data = await Task.FromResult(_connectionProtocol.ExecuteCommand<TResultType>(sql));
+            return await Task.FromResult(_serializer.Deserialize<OrientDBExecutionResult, TResultType>(data).First());
         }
 
         public IOrientDBTransaction BeginTransaction()
@@ -46,7 +46,7 @@ namespace OrientDB.Core.Data
 
         public void CreateDatabase(string databaseName)
         {
-            
+
         }
 
         public bool DatabaseExists(string databaseName)

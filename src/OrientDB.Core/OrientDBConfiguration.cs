@@ -7,28 +7,30 @@ namespace OrientDB.Core
 {
     public class OrientDBConfiguration
     {
-        public OrientDBSerializationConfiguration SerializeWith { get; private set; }
-        public OrientDBConnectionConfiguration ConnectWith { get; private set; }
-        public OrientDBLoggingConfiguration LogWith { get; private set; }
+        public OrientDBConnectionConfiguration ConnectWith { get; }
+        public OrientDBLoggingConfiguration LogWith { get; }
 
         private IOrientDBRecordSerializer _serializer;
         private IOrientDBConnectionProtocol _connectionProtocol;
+        private Type _connectionProtocolReturnType;
         private IOrientDBLogger _logger;
 
-        private OrientConnection _orientConnection;
+        private IOrientConnection _orientConnection;
 
         public OrientDBConfiguration()
         {
-            SerializeWith = new OrientDBSerializationConfiguration(this, (s) =>
+            ConnectWith = new OrientDBConnectionConfiguration(this, (s) =>
             {
                 if (s == null)
                     throw new ArgumentNullException($"{nameof(s)} cannot be null.");
                 _serializer = s;
-            });
-            ConnectWith = new OrientDBConnectionConfiguration(this, (protocol) =>
+            },
+            (protocol, type) =>
             {
                 if (protocol == null)
                     throw new ArgumentNullException($"{nameof(protocol)} cannot be null.");
+                if (type == null)
+                    throw new ArgumentNullException($"{nameof(type)} cannot be null.");
                 _connectionProtocol = protocol;
             });
             LogWith = new OrientDBLoggingConfiguration(this, (l) =>
@@ -39,11 +41,13 @@ namespace OrientDB.Core
             });
         }
 
-        public OrientConnection CreateConnection()
+        public IOrientConnection CreateConnection()
         {
-            OrientConnection connection = new OrientConnection(_serializer, _connectionProtocol, _logger);
+            Type genericType = typeof(OrientConnection<>).MakeGenericType(_connectionProtocolReturnType);
 
-            return connection;
+            IOrientConnection orientConnection = (IOrientConnection)Activator.CreateInstance(genericType, new object[] { _serializer, _connectionProtocol, _logger });
+
+            return orientConnection;
         }
     }
 }
