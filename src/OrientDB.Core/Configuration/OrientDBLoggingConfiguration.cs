@@ -14,7 +14,7 @@ namespace OrientDB.Core.Configuration
             _loggerAction = loggerAction;
         }
 
-        OrientDBConfiguration Logger(IOrientDBLogger logger)
+        public OrientDBConfiguration Logger(IOrientDBLogger logger)
         {
             _loggerAction(logger);
             return _configuration;

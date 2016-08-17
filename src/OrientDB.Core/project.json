@@ -6,10 +6,8 @@
   "packOptions": {
     "tags": [ "orientdb", "database", "orient", ".net", "c#", "document", "graph" ]
   },
-
   "frameworks": {
     "net451": {
-
     },
     "netcoreapp1.0": {
       "imports": "dnxcore50",
@@ -20,5 +18,8 @@
         }
       }
     }
+  },
+  "dependencies": {
+    "System.Reflection": "4.1.0"
   }
 }
