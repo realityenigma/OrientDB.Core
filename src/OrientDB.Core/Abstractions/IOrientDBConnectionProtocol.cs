@@ -1,9 +1,9 @@
 ﻿namespace OrientDB.Core.Abstractions
 {
-    public interface IOrientDBConnectionProtocol
+    public interface IOrientDBConnectionProtocol<TResult>
     {
-        TResult ExecuteQuery<TResult>(string sql);
-        TResult ExecuteCommand<TResult>(string sql);
+        TResult ExecuteQuery(string sql);
+        TResult ExecuteCommand(string sql);
         IOrientDBTransaction NewTransaction();
     }
 }

@@ -9,10 +9,10 @@ namespace OrientDB.Core.Data
     public class OrientConnection<TResultType> : IOrientConnection
     {
         private readonly IOrientDBRecordSerializer _serializer;
-        private readonly IOrientDBConnectionProtocol _connectionProtocol;
+        private readonly IOrientDBConnectionProtocol<TResultType> _connectionProtocol;
         private readonly IOrientDBLogger _logger;
 
-        internal OrientConnection(IOrientDBRecordSerializer serializer, IOrientDBConnectionProtocol connectionProtocol, IOrientDBLogger logger)
+        internal OrientConnection(IOrientDBRecordSerializer serializer, IOrientDBConnectionProtocol<TResultType> connectionProtocol, IOrientDBLogger logger)
         {
             if (serializer == null)
                 throw new ArgumentNullException($"{nameof(serializer)} cannot be null.");
@@ -28,14 +28,14 @@ namespace OrientDB.Core.Data
         public async Task<IEnumerable<T>> ExecuteQueryAsync<T>(string sql)
         {
             _logger.Debug($"Executing SQL Query: {sql}");
-            var data = await Task.FromResult(_connectionProtocol.ExecuteQuery<TResultType>(sql));
+            var data = await Task.FromResult(_connectionProtocol.ExecuteQuery(sql));
             return await Task.FromResult(_serializer.Deserialize<T, TResultType>(data));
         }
 
         public async Task<OrientDBExecutionResult> ExecuteCommandAsync(string sql)
         {
             _logger.Debug($"Executing SQL Command: {sql}");
-            var data = await Task.FromResult(_connectionProtocol.ExecuteCommand<TResultType>(sql));
+            var data = await Task.FromResult(_connectionProtocol.ExecuteCommand(sql));
             return await Task.FromResult(_serializer.Deserialize<OrientDBExecutionResult, TResultType>(data).First());
         }
 

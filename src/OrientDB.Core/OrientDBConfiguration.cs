@@ -3,38 +3,38 @@ using OrientDB.Core.Configuration;
 using OrientDB.Core.Data;
 using System;
 using System.Reflection;
+using System.Linq;
 
 namespace OrientDB.Core
 {
     public class OrientDBConfiguration
     {
-        public OrientDBConnectionConfiguration ConnectWith { get; }
+        public OrientDBConnectionConfiguration<TResultType> ConnectWith<TResultType>()
+        {
+            _connectionType = typeof(TResultType);
+            return new OrientDBConnectionConfiguration<TResultType>(this, (s) =>
+            {
+                if (s == null)
+                    throw new ArgumentNullException($"{nameof(s)} cannot be null.");
+                _serializer = s;
+            }, (ca) =>
+            {
+                if (ca == null)
+                    throw new ArgumentNullException($"{nameof(ca)} cannot be null.");
+                _connectionProtocol = ca;
+            });
+        }
         public OrientDBLoggingConfiguration LogWith { get; }
 
         private IOrientDBRecordSerializer _serializer;
-        private IOrientDBConnectionProtocol _connectionProtocol;
-        private Type _connectionProtocolReturnType;
+        private object _connectionProtocol;
         private IOrientDBLogger _logger;
+        private Type _connectionType;
 
         private IOrientConnection _orientConnection;
 
         public OrientDBConfiguration()
         {
-            ConnectWith = new OrientDBConnectionConfiguration(this, (s) =>
-            {
-                if (s == null)
-                    throw new ArgumentNullException($"{nameof(s)} cannot be null.");
-                _serializer = s;
-            },
-            (protocol, type) =>
-            {
-                if (protocol == null)
-                    throw new ArgumentNullException($"{nameof(protocol)} cannot be null.");
-                if (type == null)
-                    throw new ArgumentNullException($"{nameof(type)} cannot be null.");
-                _connectionProtocol = protocol;
-                _connectionProtocolReturnType = type;
-            });
             LogWith = new OrientDBLoggingConfiguration(this, (l) =>
             {
                 if (l == null)
@@ -50,7 +50,7 @@ namespace OrientDB.Core
             if (_serializer == null)
                 throw new NullReferenceException($"{nameof(_serializer)} cannot be null.");
 
-            Type genericType = typeof(OrientConnection<>).MakeGenericType(_connectionProtocolReturnType);
+            Type genericType = typeof(OrientConnection<>).MakeGenericType(_connectionType);
 
             ConstructorInfo info = genericType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0];
 
