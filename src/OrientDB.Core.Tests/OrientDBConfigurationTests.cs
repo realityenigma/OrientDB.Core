@@ -1,10 +1,10 @@
-﻿using NUnit.Framework;
+﻿using Moq;
+using NUnit.Framework;
 using OrientDB.Core.Abstractions;
 using OrientDB.Core.Tests.Extensions;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
 
 namespace OrientDB.Core.Tests
 {
@@ -37,6 +37,24 @@ namespace OrientDB.Core.Tests
                 .CreateConnection();
 
             Assert.IsInstanceOf<IOrientConnection>(connection, "IOrientConnection was not created successfully.");
+        }
+
+        [Test]
+        public void WhenCreateConnectionWithGenericTypeConnectionEnforcesType()
+        {
+            Mock<IOrientDBConnectionProtocol> mockProtocol = new Mock<IOrientDBConnectionProtocol>();
+            Mock<IOrientDBRecordSerializer> mockSerializer = new Mock<IOrientDBRecordSerializer>();
+            var serializer = mockSerializer.Object;
+
+            var connection = new OrientDBConfiguration()
+                .ConnectWith.Connect<byte[]>(mockProtocol.Object)
+                .SerializeWith.Serializer(serializer)
+                .LogWith.DemoLogger()
+                .CreateConnection();
+
+            Assert.IsTrue(connection.GetType().GetGenericArguments().First().GetTypeInfo().UnderlyingSystemType ==
+                typeof(byte[]), "Connection does not enforce protocol generic return type");
+
         }
     }
 }
