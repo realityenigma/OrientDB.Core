@@ -28,6 +28,8 @@ namespace OrientDB.Core
                 throw new NullReferenceException($"{nameof(_connectionProtocol)} cannot be null.");
             if (_serializer == null)
                 throw new NullReferenceException($"{nameof(_serializer)} cannot be null.");
+            if (_logger == null)
+                throw new NullReferenceException($"{nameof(_logger)} cannot be null.");
 
             return new OrientConnection<T>(_serializer, _connectionProtocol, _logger);
         }

@@ -46,11 +46,18 @@ namespace OrientDB.Core
 
         public IOrientConnectionFactory CreateFactory()
         {
+            if (_connectionProtocol == null)
+                throw new NullReferenceException($"{_connectionProtocol} cannot be null.");
+            if (_serializer == null)
+                throw new NullReferenceException($"{_serializer} cannot be null.");
+            if (_logger == null)
+                throw new NullReferenceException($"{_logger} cannot be null.");
+
             var factoryType = typeof(OrientConnectionFactory<>).MakeGenericType(_connectionType);
       
             ConstructorInfo info = factoryType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0];
 
-            return (IOrientConnectionFactory)info.Invoke(new object[] { _serializer, _connectionProtocol, _logger });
+            return (IOrientConnectionFactory)info.Invoke(new object[] { _connectionProtocol, _serializer, _logger });
         }
     }
 }
