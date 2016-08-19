@@ -16,25 +16,32 @@ namespace OrientDB.Core.Tests
         {
             OrientDBConfiguration config = new OrientDBConfiguration();
 
-            Assert.Throws(typeof(NullReferenceException), () => config.CreateConnection(), "NullReferenceException not thrown.");
+            Assert.Throws(typeof(NullReferenceException), () => config.CreateFactory().GetConnection(), "NullReferenceException not thrown.");
         }
 
         [Test]
         public void CreateConnectionWithNullSerializerThrowsArgumentNullReferenceException()
         {
+            Mock<IOrientDBConnectionProtocol<byte[]>> mockProtocol = new Mock<IOrientDBConnectionProtocol<byte[]>>();
+
             Assert.Throws(typeof(ArgumentNullException),
-                () => new OrientDBConfiguration().ConnectWith.UnitTestConnection<byte[]>().SerializeWith.Serializer(null).CreateConnection(),
+                () => new OrientDBConfiguration().ConnectWith<byte[]>().Connect(mockProtocol.Object).SerializeWith.Serializer(null).CreateFactory().GetConnection(),
                 "NUllReferenceException not thrown.");
         }
 
         [Test]
         public void CreateConnectionWithValidInputsCreatesConnection()
         {
+            Mock<IOrientDBConnectionProtocol<byte[]>> mockProtocol = new Mock<IOrientDBConnectionProtocol<byte[]>>();
+            Mock<IOrientDBRecordSerializer> mockSerializer = new Mock<IOrientDBRecordSerializer>();
+            var serializer = mockSerializer.Object;
+
             var connection = new OrientDBConfiguration()
-                .ConnectWith.UnitTestConnection<byte[]>()
-                .SerializeWith.TestRecordSerializer()
+                .ConnectWith<byte[]>().Connect(mockProtocol.Object)
+                .SerializeWith.Serializer(serializer)
                 .LogWith.DemoLogger()
-                .CreateConnection();
+                .CreateFactory()
+                .GetConnection();
 
             Assert.IsInstanceOf<IOrientConnection>(connection, "IOrientConnection was not created successfully.");
         }
@@ -42,15 +49,16 @@ namespace OrientDB.Core.Tests
         [Test]
         public void WhenCreateConnectionWithGenericTypeConnectionEnforcesType()
         {
-            Mock<IOrientDBConnectionProtocol> mockProtocol = new Mock<IOrientDBConnectionProtocol>();
+            Mock<IOrientDBConnectionProtocol<byte[]>> mockProtocol = new Mock<IOrientDBConnectionProtocol<byte[]>>();
             Mock<IOrientDBRecordSerializer> mockSerializer = new Mock<IOrientDBRecordSerializer>();
             var serializer = mockSerializer.Object;
 
             var connection = new OrientDBConfiguration()
-                .ConnectWith.Connect<byte[]>(mockProtocol.Object)
+                .ConnectWith<byte[]>().Connect(mockProtocol.Object)
                 .SerializeWith.Serializer(serializer)
                 .LogWith.DemoLogger()
-                .CreateConnection();
+                .CreateFactory()
+                .GetConnection();
 
             Assert.IsTrue(connection.GetType().GetGenericArguments().First().GetTypeInfo().UnderlyingSystemType ==
                 typeof(byte[]), "Connection does not enforce protocol generic return type");

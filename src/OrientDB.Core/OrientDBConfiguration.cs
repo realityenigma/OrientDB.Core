@@ -42,21 +42,15 @@ namespace OrientDB.Core
                 _logger = l;
             });
         }
+        
 
-        public IOrientConnection CreateConnection()
+        public IOrientConnectionFactory CreateFactory()
         {
-            if (_connectionProtocol == null)
-                throw new NullReferenceException($"{nameof(_connectionProtocol)} cannot be null.");
-            if (_serializer == null)
-                throw new NullReferenceException($"{nameof(_serializer)} cannot be null.");
+            var factoryType = typeof(OrientConnectionFactory<>).MakeGenericType(_connectionType);
+      
+            ConstructorInfo info = factoryType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0];
 
-            Type genericType = typeof(OrientConnection<>).MakeGenericType(_connectionType);
-
-            ConstructorInfo info = genericType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0];
-
-            IOrientConnection orientConnection = (IOrientConnection)info.Invoke(new object[] { _serializer, _connectionProtocol, _logger });
-          
-            return orientConnection;
+            return (IOrientConnectionFactory)info.Invoke(new object[] { _serializer, _connectionProtocol, _logger });
         }
     }
 }
