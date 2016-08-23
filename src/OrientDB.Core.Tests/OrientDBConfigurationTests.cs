@@ -20,7 +20,7 @@ namespace OrientDB.Core.Tests
         }
 
         [Test]
-        public void CreateConnectionWithNullSerializerThrowsArgumentNullReferenceException()
+        public void CreateConnectionFactoryWithNullSerializerThrowsArgumentNullReferenceException()
         {
             Mock<IOrientDBConnectionProtocol<byte[]>> mockProtocol = new Mock<IOrientDBConnectionProtocol<byte[]>>();
 
@@ -30,20 +30,19 @@ namespace OrientDB.Core.Tests
         }
 
         [Test]
-        public void CreateConnectionWithValidInputsCreatesConnection()
+        public void CreateConnectionFactoryWithValidInputsCreatesConnection()
         {
             Mock<IOrientDBConnectionProtocol<byte[]>> mockProtocol = new Mock<IOrientDBConnectionProtocol<byte[]>>();
             Mock<IOrientDBRecordSerializer> mockSerializer = new Mock<IOrientDBRecordSerializer>();
             var serializer = mockSerializer.Object;
 
-            var connection = new OrientDBConfiguration()
+            var factory = new OrientDBConfiguration()
                 .ConnectWith<byte[]>().Connect(mockProtocol.Object)
                 .SerializeWith.Serializer(serializer)
                 .LogWith.DemoLogger()
-                .CreateFactory()
-                .GetConnection();
+                .CreateFactory();
 
-            Assert.IsInstanceOf<IOrientConnection>(connection, "IOrientConnection was not created successfully.");
+            Assert.IsInstanceOf<IOrientConnectionFactory>(factory, "IOrientConnectionFactory was not created successfully.");
         }
 
         [Test]

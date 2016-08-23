@@ -15,11 +15,13 @@
         "Microsoft.NETCore.App": {
           "type": "platform",
           "version": "1.0.0"
-        }
+        },
+        "System.Threading.Thread": "4.0.0"
       }
     }
   },
   "dependencies": {
+    "System.Collections.Concurrent": "4.0.12",
     "System.Linq": "4.1.0",
     "System.Reflection": "4.1.0"
   }
