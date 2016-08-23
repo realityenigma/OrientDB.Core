@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace OrientDB.Core.Data
 {
@@ -25,33 +24,18 @@ namespace OrientDB.Core.Data
             _logger = logger;
         }
 
-        public async Task<IEnumerable<T>> ExecuteQueryAsync<T>(string sql)
+        public IEnumerable<T> ExecuteQuery<T>(string sql)
         {
             _logger.Debug($"Executing SQL Query: {sql}");
-            var data = await Task.FromResult(_connectionProtocol.ExecuteQuery(sql));
-            return await Task.FromResult(_serializer.Deserialize<T, TResultType>(data));
+            var data = _connectionProtocol.ExecuteQuery(sql);
+            return _serializer.Deserialize<T, TResultType>(data);
         }
 
-        public async Task<OrientDBExecutionResult> ExecuteCommandAsync(string sql)
+        public OrientDBExecutionResult ExecuteCommand(string sql)
         {
             _logger.Debug($"Executing SQL Command: {sql}");
-            var data = await Task.FromResult(_connectionProtocol.ExecuteCommand(sql));
-            return await Task.FromResult(_serializer.Deserialize<OrientDBExecutionResult, TResultType>(data).First());
-        }
-
-        public IOrientDBTransaction BeginTransaction()
-        {
-            return _connectionProtocol.NewTransaction();
-        }
-
-        public void CreateDatabase(string databaseName)
-        {
-
-        }
-
-        public bool DatabaseExists(string databaseName)
-        {
-            return true;
+            var data = _connectionProtocol.ExecuteCommand(sql);
+            return _serializer.Deserialize<OrientDBExecutionResult, TResultType>(data).First();
         }
     }
 }
