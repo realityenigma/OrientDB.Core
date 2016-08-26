@@ -5,13 +5,13 @@ using System.Linq;
 
 namespace OrientDB.Core.Data
 {
-    public class OrientConnection<TResultType> : IOrientConnection
+    public class OrientConnection<TDataType> : IOrientConnection
     {
-        private readonly IOrientDBRecordSerializer _serializer;
-        private readonly IOrientDBConnectionProtocol<TResultType> _connectionProtocol;
+        private readonly IOrientDBRecordSerializer<TDataType> _serializer;
+        private readonly IOrientDBConnectionProtocol<TDataType> _connectionProtocol;
         private readonly IOrientDBLogger _logger;
 
-        internal OrientConnection(IOrientDBRecordSerializer serializer, IOrientDBConnectionProtocol<TResultType> connectionProtocol, IOrientDBLogger logger)
+        internal OrientConnection(IOrientDBRecordSerializer<TDataType> serializer, IOrientDBConnectionProtocol<TDataType> connectionProtocol, IOrientDBLogger logger)
         {
             if (serializer == null)
                 throw new ArgumentNullException($"{nameof(serializer)} cannot be null.");
@@ -24,18 +24,18 @@ namespace OrientDB.Core.Data
             _logger = logger;
         }
 
-        public IEnumerable<T> ExecuteQuery<T>(string sql)
+        public IEnumerable<TResultType> ExecuteQuery<TResultType>(string sql)
         {
             _logger.Debug($"Executing SQL Query: {sql}");
-            var data = _connectionProtocol.ExecuteQuery(sql);
-            return _serializer.Deserialize<T, TResultType>(data);
+            var data = _connectionProtocol.ExecuteQuery<TResultType>(sql, _serializer);
+            return data;
         }
 
-        public OrientDBExecutionResult ExecuteCommand(string sql)
+        public IOrientDBCommandResult ExecuteCommand(string sql)
         {
             _logger.Debug($"Executing SQL Command: {sql}");
-            var data = _connectionProtocol.ExecuteCommand(sql);
-            return _serializer.Deserialize<OrientDBExecutionResult, TResultType>(data).First();
+            var data = _connectionProtocol.ExecuteCommand(sql, _serializer);
+            return data;
         }
     }
 }

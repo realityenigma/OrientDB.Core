@@ -6,16 +6,16 @@ using System.Threading;
 
 namespace OrientDB.Core
 {
-    internal class OrientConnectionFactory<T> : IOrientConnectionFactory
+    internal class OrientConnectionFactory<TDataType> : IOrientConnectionFactory
     {
-        private readonly IOrientDBConnectionProtocol<T> _connectionProtocol;
-        private readonly IOrientDBRecordSerializer _serializer;
+        private readonly IOrientDBConnectionProtocol<TDataType> _connectionProtocol;
+        private readonly IOrientDBRecordSerializer<TDataType> _serializer;
         private readonly IOrientDBLogger _logger;
 
         private readonly ConcurrentDictionary<int, IOrientConnection> _connectionManager = new ConcurrentDictionary<int, IOrientConnection>();
 
-        internal OrientConnectionFactory(IOrientDBConnectionProtocol<T> connectionProtocol,
-            IOrientDBRecordSerializer serializer, IOrientDBLogger logger)
+        internal OrientConnectionFactory(IOrientDBConnectionProtocol<TDataType> connectionProtocol,
+            IOrientDBRecordSerializer<TDataType> serializer, IOrientDBLogger logger)
         {
             _connectionProtocol = connectionProtocol;
             _serializer = serializer;
@@ -39,7 +39,7 @@ namespace OrientDB.Core
             if (_logger == null)
                 throw new NullReferenceException($"{nameof(_logger)} cannot be null.");
 
-            connection = new OrientConnection<T>(_serializer, _connectionProtocol, _logger);
+            connection = new OrientConnection<TDataType>(_serializer, _connectionProtocol, _logger);
             _connectionManager.AddOrUpdate(threadId, connection, (key, conn) => _connectionManager[key] = conn);
             return connection;
         }

@@ -33,7 +33,7 @@ namespace OrientDB.Core.Tests
         public void CreateConnectionFactoryWithValidInputsCreatesConnection()
         {
             Mock<IOrientDBConnectionProtocol<byte[]>> mockProtocol = new Mock<IOrientDBConnectionProtocol<byte[]>>();
-            Mock<IOrientDBRecordSerializer> mockSerializer = new Mock<IOrientDBRecordSerializer>();
+            Mock<IOrientDBRecordSerializer<byte[]>> mockSerializer = new Mock<IOrientDBRecordSerializer<byte[]>>();
             var serializer = mockSerializer.Object;
 
             var factory = new OrientDBConfiguration()
@@ -49,7 +49,7 @@ namespace OrientDB.Core.Tests
         public void WhenCreateConnectionWithGenericTypeConnectionEnforcesType()
         {
             Mock<IOrientDBConnectionProtocol<byte[]>> mockProtocol = new Mock<IOrientDBConnectionProtocol<byte[]>>();
-            Mock<IOrientDBRecordSerializer> mockSerializer = new Mock<IOrientDBRecordSerializer>();
+            Mock<IOrientDBRecordSerializer<byte[]>> mockSerializer = new Mock<IOrientDBRecordSerializer<byte[]>>();
             var serializer = mockSerializer.Object;
 
             var connection = new OrientDBConfiguration()

@@ -5,7 +5,7 @@ namespace OrientDB.Core.Abstractions
 {
     public interface IOrientConnection
     {
-        IEnumerable<T> ExecuteQuery<T>(string sql);
-        OrientDBExecutionResult ExecuteCommand(string sql);        
+        IEnumerable<TResultType> ExecuteQuery<TResultType>(string sql);
+        IOrientDBCommandResult ExecuteCommand(string sql);        
     }
 }

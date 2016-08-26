@@ -3,12 +3,12 @@ using System;
 
 namespace OrientDB.Core.Configuration
 {
-    public class OrientDBSerializationConfiguration
+    public class OrientDBSerializationConfiguration<TDataType>
     {
         private readonly OrientDBConfiguration _configuration;
-        private readonly Action<IOrientDBRecordSerializer> _addSerializer;
+        private readonly Action<IOrientDBRecordSerializer<TDataType>> _addSerializer;
 
-        internal OrientDBSerializationConfiguration(OrientDBConfiguration configuration, Action<IOrientDBRecordSerializer> addSerializer)
+        internal OrientDBSerializationConfiguration(OrientDBConfiguration configuration, Action<IOrientDBRecordSerializer<TDataType>> addSerializer)
         {
             if (configuration == null)
                 throw new ArgumentNullException($"{nameof(configuration)} cannot be null.");
@@ -16,7 +16,7 @@ namespace OrientDB.Core.Configuration
             _addSerializer = addSerializer;
         }
 
-        public OrientDBConfiguration Serializer(IOrientDBRecordSerializer serializer)
+        public OrientDBConfiguration Serializer(IOrientDBRecordSerializer<TDataType> serializer)
         {
             if (serializer == null)
                 throw new ArgumentNullException($"{nameof(serializer)} cannot be null.");

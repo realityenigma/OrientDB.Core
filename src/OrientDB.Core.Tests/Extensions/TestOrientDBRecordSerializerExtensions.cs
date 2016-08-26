@@ -6,7 +6,7 @@ namespace OrientDB.Core.Tests.Extensions
 {
     public static class TestOrientDBRecordSerializerExtensions
     {
-        public static OrientDBConfiguration TestRecordSerializer(this OrientDBSerializationConfiguration configuration)
+        public static OrientDBConfiguration TestRecordSerializer(this OrientDBSerializationConfiguration<byte[]> configuration)
         {
             if (configuration == null)
                 throw new ArgumentNullException($"{nameof(configuration)} cannot be null");

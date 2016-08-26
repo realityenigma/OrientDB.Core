@@ -26,7 +26,7 @@ namespace OrientDB.Core
         }
         public OrientDBLoggingConfiguration LogWith { get; }
 
-        private IOrientDBRecordSerializer _serializer;
+        private object _serializer;
         private object _connectionProtocol;
         private IOrientDBLogger _logger;
         private Type _connectionType;
@@ -54,7 +54,7 @@ namespace OrientDB.Core
                 throw new NullReferenceException($"{_logger} cannot be null.");
 
             var factoryType = typeof(OrientConnectionFactory<>).MakeGenericType(_connectionType);
-      
+
             ConstructorInfo info = factoryType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance)[0];
 
             return (IOrientConnectionFactory)info.Invoke(new object[] { _connectionProtocol, _serializer, _logger });

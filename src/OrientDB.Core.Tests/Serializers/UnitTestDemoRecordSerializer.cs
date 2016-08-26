@@ -4,14 +4,14 @@ using System.Collections.Generic;
 
 namespace OrientDB.Core.Tests.Serializers
 {
-    public class UnitTestDemoRecordSerializer : IOrientDBRecordSerializer
+    public class UnitTestDemoRecordSerializer : IOrientDBRecordSerializer<byte[]>
     {
-        public IEnumerable<T> Deserialize<T, TResult>(TResult data)
+        public IEnumerable<TResultType> Deserialize<TResultType>(byte[] data)
         {
             throw new NotImplementedException();
         }
 
-        public void Serialize<TResult>(TResult data)
+        public byte[] Serialize<T>(T input)
         {
             throw new NotImplementedException();
         }

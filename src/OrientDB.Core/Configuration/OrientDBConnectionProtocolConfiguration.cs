@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace OrientDB.Core.Configuration
 {
-    public class OrientDBConnectionProtocolConfiguration<TResultType>
+    public class OrientDBConnectionProtocolConfiguration<TDataType>
     {
-        public OrientDBSerializationConfiguration SerializeWith { get; }
+        public OrientDBSerializationConfiguration<TDataType> SerializeWith { get; }
 
         private readonly OrientDBConfiguration _configuration;
-        private readonly Action<IOrientDBConnectionProtocol<TResultType>> _configAction;
-        private readonly Action<IOrientDBRecordSerializer> _serializerAction;
+        private readonly Action<IOrientDBConnectionProtocol<TDataType>> _configAction;
+        private readonly Action<IOrientDBRecordSerializer<TDataType>> _serializerAction;
 
-        internal OrientDBConnectionProtocolConfiguration(OrientDBConfiguration configuration, Action<IOrientDBRecordSerializer> serializerAction, Action<IOrientDBConnectionProtocol<TResultType>> configAction)
+        internal OrientDBConnectionProtocolConfiguration(OrientDBConfiguration configuration, Action<IOrientDBRecordSerializer<TDataType>> serializerAction, Action<IOrientDBConnectionProtocol<TDataType>> configAction)
         {
             _configuration = configuration;
             _configAction = configAction;
             _serializerAction = serializerAction;
-            SerializeWith = new OrientDBSerializationConfiguration(_configuration, _serializerAction);
+            SerializeWith = new OrientDBSerializationConfiguration<TDataType>(_configuration, _serializerAction);
         }
     }
 }

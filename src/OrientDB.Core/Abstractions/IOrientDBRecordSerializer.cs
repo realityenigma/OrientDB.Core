@@ -2,10 +2,10 @@
 
 namespace OrientDB.Core.Abstractions
 {
-    public interface IOrientDBRecordSerializer
+    public interface IOrientDBRecordSerializer<TDataType>
     {
-        IEnumerable<T> Deserialize<T, TResult>(TResult data);
+        IEnumerable<TResultType> Deserialize<TResultType>(TDataType data);
 
-        void Serialize<TResult>(TResult data);
+        TDataType Serialize<T>(T input);
     }
 }

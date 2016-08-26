@@ -1,9 +1,10 @@
-﻿namespace OrientDB.Core.Abstractions
+﻿using System.Collections.Generic;
+
+namespace OrientDB.Core.Abstractions
 {
-    public interface IOrientDBConnectionProtocol<TResult>
+    public interface IOrientDBConnectionProtocol<TDataType>
     {
-        TResult ExecuteQuery(string sql);
-        TResult ExecuteCommand(string sql);
-        IOrientDBTransaction NewTransaction();
+        IEnumerable<TResultType> ExecuteQuery<TResultType>(string sql, IOrientDBRecordSerializer<TDataType> serializer);
+        IOrientDBCommandResult ExecuteCommand(string sql, IOrientDBRecordSerializer<TDataType> serializer);
     }
 }

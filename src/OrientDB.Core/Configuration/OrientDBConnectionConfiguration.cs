@@ -3,23 +3,23 @@ using System;
 
 namespace OrientDB.Core.Configuration
 {
-    public class OrientDBConnectionConfiguration<TResultType>
+    public class OrientDBConnectionConfiguration<TDataType>
     {
         private readonly OrientDBConfiguration _configuration;
-        private readonly Action<IOrientDBConnectionProtocol<TResultType>> _configAction;
-        private readonly Action<IOrientDBRecordSerializer> _serializerAction;
+        private readonly Action<IOrientDBConnectionProtocol<TDataType>> _configAction;
+        private readonly Action<IOrientDBRecordSerializer<TDataType>> _serializerAction;
 
-        internal OrientDBConnectionConfiguration(OrientDBConfiguration configuration, Action<IOrientDBRecordSerializer> serializerAction, Action<IOrientDBConnectionProtocol<TResultType>> configAction)
+        internal OrientDBConnectionConfiguration(OrientDBConfiguration configuration, Action<IOrientDBRecordSerializer<TDataType>> serializerAction, Action<IOrientDBConnectionProtocol<TDataType>> configAction)
         {
             _configuration = configuration;
             _configAction = configAction;
             _serializerAction = serializerAction;
         }
 
-        public OrientDBConnectionProtocolConfiguration<TResultType> Connect(IOrientDBConnectionProtocol<TResultType> protocol)
+        public OrientDBConnectionProtocolConfiguration<TDataType> Connect(IOrientDBConnectionProtocol<TDataType> protocol)
         {
             _configAction(protocol);
-            return new OrientDBConnectionProtocolConfiguration<TResultType>(_configuration, _serializerAction, _configAction);
+            return new OrientDBConnectionProtocolConfiguration<TDataType>(_configuration, _serializerAction, _configAction);
         }
     }
 }
