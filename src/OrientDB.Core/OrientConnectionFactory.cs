@@ -24,20 +24,21 @@ namespace OrientDB.Core
 
         public IOrientConnection GetConnection()
         {
-            int threadId = Thread.CurrentThread.ManagedThreadId;
-            IOrientConnection connection;
-            if (_connectionManager.ContainsKey(threadId))
-            {               
-                _connectionManager.TryGetValue(threadId, out connection);
-                return connection;
-            }
-
             if (_connectionProtocol == null)
                 throw new NullReferenceException($"{nameof(_connectionProtocol)} cannot be null.");
             if (_serializer == null)
                 throw new NullReferenceException($"{nameof(_serializer)} cannot be null.");
             if (_logger == null)
                 throw new NullReferenceException($"{nameof(_logger)} cannot be null.");
+
+            int threadId = Thread.CurrentThread.ManagedThreadId;
+            IOrientConnection connection;
+            if (_connectionManager.ContainsKey(threadId))
+            {               
+                _connectionManager.TryGetValue(threadId, out connection);
+                if(connection != null)
+                    return connection;
+            }            
 
             connection = new OrientConnection<TDataType>(_serializer, _connectionProtocol, _logger);
             _connectionManager.AddOrUpdate(threadId, connection, (key, conn) => _connectionManager[key] = conn);
