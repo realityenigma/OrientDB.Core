@@ -6,8 +6,8 @@ namespace OrientDB.Core.Abstractions
     {
         OrientDBRecordFormat RecordFormat { get; }
 
-        IEnumerable<TResultType> Deserialize<TResultType>(TDataType data);
+        IEnumerable<TResultType> Deserialize<TResultType>(TDataType data) where TResultType : IOrientDBEntity;
 
-        TDataType Serialize<T>(T input);
+        TDataType Serialize<T>(T input) where T : IOrientDBEntity;
     }
 }

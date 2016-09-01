@@ -14,12 +14,12 @@ namespace OrientDB.Core.Tests.Serializers
             }
         }
 
-        public IEnumerable<TResultType> Deserialize<TResultType>(byte[] data)
+        public IEnumerable<TResultType> Deserialize<TResultType>(byte[] data) where TResultType : IOrientDBEntity
         {
             throw new NotImplementedException();
         }
 
-        public byte[] Serialize<T>(T input)
+        public byte[] Serialize<T>(T input) where T : IOrientDBEntity
         {
             throw new NotImplementedException();
         }
