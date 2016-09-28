@@ -13,6 +13,7 @@ namespace OrientDB.Core
         private readonly IOrientDBLogger _logger;
 
         private readonly ConcurrentDictionary<int, IOrientConnection> _connectionManager = new ConcurrentDictionary<int, IOrientConnection>();
+        private readonly ConcurrentBag<IOrientConnection> _latentPool = new ConcurrentBag<IOrientConnection>();
 
         internal OrientConnectionFactory(IOrientDBConnectionProtocol<TDataType> connectionProtocol,
             IOrientDBRecordSerializer<TDataType> serializer, IOrientDBLogger logger)
@@ -20,6 +21,12 @@ namespace OrientDB.Core
             _connectionProtocol = connectionProtocol;
             _serializer = serializer;
             _logger = logger;
+
+            // Pool up 10 connections for the time being. This will be re-addressed.
+            for(int i = 0; i < 9; i++)
+            {
+                _latentPool.Add(new OrientConnection<TDataType>(_serializer, _connectionProtocol, _logger));
+            }
         }
 
         public IOrientConnection GetConnection()
@@ -38,10 +45,14 @@ namespace OrientDB.Core
                 _connectionManager.TryGetValue(threadId, out connection);
                 if(connection != null)
                     return connection;
-            }            
+            }
 
-            connection = new OrientConnection<TDataType>(_serializer, _connectionProtocol, _logger);
-            _connectionManager.AddOrUpdate(threadId, connection, (key, conn) => _connectionManager[key] = conn);
+            _latentPool.TryTake(out connection);
+            if (connection == null)
+            {
+                connection = new OrientConnection<TDataType>(_serializer, _connectionProtocol, _logger);
+                _connectionManager.AddOrUpdate(threadId, connection, (key, conn) => _connectionManager[key] = conn);
+            }
             return connection;
         }
     }
