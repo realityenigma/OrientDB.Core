@@ -1,4 +1,5 @@
 ﻿using OrientDB.Core.Abstractions;
+using OrientDB.Core.Models;
 using System;
 using System.Collections.Generic;
 
@@ -14,12 +15,12 @@ namespace OrientDB.Core.Tests.Serializers
             }
         }
 
-        public IEnumerable<TResultType> Deserialize<TResultType>(byte[] data) where TResultType : IOrientDBEntity
+        public IEnumerable<TResultType> Deserialize<TResultType>(byte[] data) where TResultType : OrientDBEntity
         {
             throw new NotImplementedException();
         }
 
-        public byte[] Serialize<T>(T input) where T : IOrientDBEntity
+        public byte[] Serialize<T>(T input) where T : OrientDBEntity
         {
             throw new NotImplementedException();
         }

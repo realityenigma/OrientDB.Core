@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using OrientDB.Core.Models;
+using System.Collections.Generic;
 
 namespace OrientDB.Core.Abstractions
 {
@@ -6,8 +7,8 @@ namespace OrientDB.Core.Abstractions
     {
         OrientDBRecordFormat RecordFormat { get; }
 
-        IEnumerable<TResultType> Deserialize<TResultType>(TDataType data) where TResultType : IOrientDBEntity;
+        IEnumerable<TResultType> Deserialize<TResultType>(TDataType data) where TResultType : OrientDBEntity;
 
-        TDataType Serialize<T>(T input) where T : IOrientDBEntity;
+        TDataType Serialize<T>(T input) where T : OrientDBEntity;
     }
 }

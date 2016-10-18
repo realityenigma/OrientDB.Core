@@ -1,4 +1,5 @@
 ﻿using OrientDB.Core.Abstractions;
+using OrientDB.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,7 +25,7 @@ namespace OrientDB.Core.Data
             _logger = logger;
         }
 
-        public IEnumerable<TResultType> ExecuteQuery<TResultType>(string sql)
+        public IEnumerable<TResultType> ExecuteQuery<TResultType>(string sql) where TResultType : OrientDBEntity
         {
             _logger.Debug($"Executing SQL Query: {sql}");
             var data = _connectionProtocol.ExecuteQuery<TResultType>(sql, _serializer);
