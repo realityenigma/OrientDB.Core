@@ -15,7 +15,7 @@ namespace OrientDB.Core.Tests.Serializers
             }
         }
 
-        public IEnumerable<TResultType> Deserialize<TResultType>(byte[] data) where TResultType : OrientDBEntity
+        public TResultType Deserialize<TResultType>(byte[] data) where TResultType : OrientDBEntity
         {
             throw new NotImplementedException();
         }
