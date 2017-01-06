@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace OrientDB.Core
+namespace OrientDB.Core.Models
 {
     public class ORID : IEquatable<ORID>
     {

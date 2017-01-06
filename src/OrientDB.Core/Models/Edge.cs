@@ -3,7 +3,7 @@ using System;
 
 namespace OrientDB.Core.Models
 {
-    public class Edge
+    public class Edge : DictionaryOrientDBEntity
     {
         [OrientDBProperty(Alias = "in", Serializable = false)]
         public ORID InV
@@ -31,7 +31,7 @@ namespace OrientDB.Core.Models
             get
             {
                 throw new NotImplementedException();
-                string label = "";//this.GetField<string>("@OClassName");
+                string label = GetField<string>("@OClassName");
 
                 if (string.IsNullOrEmpty(label))
                 {
